@@ -19,10 +19,10 @@
 - GitHub Pages
 
 👥 Répartition du travail
-    - Membre 1 : API GitHub
-    - Membre 2 : analyse du code
-    - Membre 3 : génération HTML
-    - Membre 4 : déploiement
+- Membre 1 : API GitHub
+- Membre 2 : analyse du code
+- Membre 3 : génération HTML
+- Membre 4 : déploiement
 
 📦 Livrables
        - Dépôt GitHub structuré (Application Python)
