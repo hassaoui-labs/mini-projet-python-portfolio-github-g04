@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <title>Portfolio GitHub - {{ username }}</title>
+    <link rel="stylesheet" href="../assets/style.css">
+</head>
+<body>
+
+<h1>Portfolio GitHub</h1>
+<h2>{{ username }}</h2>
+
+<div class="repos">
+{% for repo in repos %}
+    <div class="card">
+        <h3>{{ repo.name }}</h3>
+        <p><strong>Commits :</strong> {{ repo.commits }}</p>
+        <p><strong>Langages :</strong> {{ repo.languages | join(", ") }}</p>
+        <p><strong>⭐ Stars :</strong> {{ repo.stars }}</p>
+        <p><strong>🍴 Forks :</strong> {{ repo.forks }}</p>
+        <p><strong>🏆 Score :</strong> {{ repo.score }}</p>
+        <a href="{{ repo.url }}" target="_blank">Voir le repository</a>
+    </div>
+{% endfor %}
+</div>
+
+</body>
+</html>
