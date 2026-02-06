@@ -1,36 +1,44 @@
-from github_api import get_repo_commits, get_languages
+from datetime import datetime
 
 
-def analyze_repo(username, repo):
-    repo_name = repo.get("name")
+def extract_commits(commits):
+    formatted = []
 
-    commits = get_repo_commits(username, repo_name)
-    commit_count = len(commits) if isinstance(commits, list) else 0
+    for commit in commits:
+        commit_data = commit.get("commit", {})
+        author_data = commit_data.get("author", {})
 
-    langs = get_languages(username, repo_name)
-    lang_list = list(langs.keys()) if isinstance(langs, dict) else []
+        date_iso = author_data.get("date")
+        date = (
+            datetime.fromisoformat(date_iso.replace("Z", ""))
+            .strftime("%d/%m/%Y") if date_iso else "N/A"
+        )
 
-    stars = repo.get("stargazers_count", 0)
-    forks = repo.get("forks_count", 0)
+        formatted.append({
+            "message": commit_data.get("message", "No message"),
+            "author": author_data.get("name", "Unknown"),
+            "date": date
+        })
 
-    score = commit_count * 2 + stars * 5 + forks * 3
+    return formatted
+
+
+def analyze_repo(repo, commits):
+    stars = repo["stargazers_count"]
+    forks = repo["forks_count"]
+    commit_count = len(commits)
+
+    # Score simple et explicable
+    score = (commit_count * 2)
 
     return {
-        "name": repo_name,
-        "commits": commit_count,
-        "languages": lang_list,
+        "name": repo["name"],
+        "description": repo["description"] or "No description",
+        "url": repo["html_url"],
+        "language": repo["language"] or "N/A",
         "stars": stars,
         "forks": forks,
+        "commit_count": commit_count,
         "score": score,
-        "url": repo.get("html_url"),
+        "commits": extract_commits(commits)
     }
-
-
-def analyze_all(username, repos):
-    results = []
-
-    for repo in repos:
-        if not repo.get("fork", False):
-            results.append(analyze_repo(username, repo))
-
-    return results
