@@ -1,3 +1,4 @@
-GITHUB_TOKEN = "YourGitHubTokenHere"
-BASE_URL = "https://api.github.com"
+import os
 
+BASE_URL = "https://api.github.com"
+GITHUB_TOKEN = os.getenv("GITHUB_TOKEN", "")
