@@ -1,13 +1,21 @@
+import os
 from jinja2 import Environment, FileSystemLoader
 
-def generate_portfolio(username, data):
-    env = Environment(loader=FileSystemLoader("templates"))
+def generate_html(projects, config):
+    template_dir = os.path.join(os.path.dirname(__file__), "templates")
+    env = Environment(loader=FileSystemLoader(template_dir))
+
     template = env.get_template("portfolio.html")
 
-    html_content = template.render(
-        username=username,
-        repos=data
-    )
+    data = {
+        "projects": projects,
+        "config": config,
+    }
 
-    with open("output/portfolio.html", "w", encoding="utf-8") as f:
-        f.write(html_content)
+    output_path = config["portfolio"]["output_path"]
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(template.render(**data))
+
+    print(f"✅ Portfolio généré : {output_path}")
