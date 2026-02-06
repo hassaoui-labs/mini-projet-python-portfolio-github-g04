@@ -1,21 +1,21 @@
 import os
-from jinja2 import Environment, FileSystemLoader, select_autoescape
+from jinja2 import Environment, FileSystemLoader
 
-
-def generate_portfolio(username, data):
-    env = Environment(
-        loader=FileSystemLoader("templates"),
-        autoescape=select_autoescape(["html", "xml"])
-    )
+def generate_html(projects, config):
+    template_dir = os.path.join(os.path.dirname(__file__), "templates")
+    env = Environment(loader=FileSystemLoader(template_dir))
 
     template = env.get_template("portfolio.html")
 
-    html_content = template.render(
-        username=username,
-        repos=data
-    )
+    data = {
+        "projects": projects,
+        "config": config,
+    }
 
-    os.makedirs("output", exist_ok=True)
+    output_path = config["portfolio"]["output_path"]
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
 
-    with open("output/portfolio.html", "w", encoding="utf-8") as f:
-        f.write(html_content)
+    with open(output_path, "w", encoding="utf-8") as f:
+        f.write(template.render(**data))
+
+    print(f"✅ Portfolio généré : {output_path}")
