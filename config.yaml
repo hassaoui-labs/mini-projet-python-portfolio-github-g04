@@ -1,0 +1,12 @@
+github:
+  username: "hassaoui-labs"
+  token: NULL
+
+filters:
+  exclude_forks: true
+
+portfolio:
+  name: "Mini-projets collaboratifs Python"
+  title: "Groupe 04"
+  description: "Description: Application Python qui analyse les quatre dépôts GitHub des quatres groupes et génère automatiquement un portfolio professionnel (HTML)"
+  output_path: "output/portfolio.html"
