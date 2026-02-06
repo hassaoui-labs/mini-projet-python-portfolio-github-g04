@@ -1,32 +1,80 @@
 import requests
 from config import GITHUB_TOKEN, BASE_URL
 
-headers = {
-    "Authorization": f"token {GITHUB_TOKEN}"
+
+HEADERS = {
+    "Authorization": f"Bearer {GITHUB_TOKEN}",
+    "Accept": "application/vnd.github+json",
 }
 
+
 def get_user_repos(username):
-    url = f"{BASE_URL}/users/{username}/repos"
+    repos = []
+    page = 1
+    per_page = 100
 
-    r = requests.get(url, headers=headers)
+    while True:
+        url = f"{BASE_URL}/users/{username}/repos"
+        params = {"per_page": per_page, "page": page}
 
-    if r.status_code != 200:
-        print("Erreur API:", r.status_code)
-        print(r.text)
-        return []
+        try:
+            r = requests.get(url, headers=HEADERS, params=params, timeout=10)
+        except requests.RequestException as e:
+            print("Erreur connexion API:", e)
+            return []
 
-    return r.json()
+        if r.status_code != 200:
+            print("Erreur API:", r.status_code)
+            print(r.text)
+            return []
+
+        data = r.json()
+        if not isinstance(data, list) or len(data) == 0:
+            break
+
+        repos.extend(data)
+        page += 1
+
+    return repos
+
+
 def get_repo_commits(username, repo):
-    url = f"{BASE_URL}/repos/{username}/{repo}/commits"
-    r = requests.get(url, headers=headers)
-    if r.status_code != 200:
-        return []
-    return r.json()
+    commits = []
+    page = 1
+    per_page = 100
+
+    while True:
+        url = f"{BASE_URL}/repos/{username}/{repo}/commits"
+        params = {"per_page": per_page, "page": page}
+
+        try:
+            r = requests.get(url, headers=HEADERS, params=params, timeout=10)
+        except requests.RequestException:
+            return []
+
+        if r.status_code != 200:
+            return []
+
+        data = r.json()
+        if not isinstance(data, list) or len(data) == 0:
+            break
+
+        commits.extend(data)
+        page += 1
+
+    return commits
 
 
 def get_languages(username, repo):
     url = f"{BASE_URL}/repos/{username}/{repo}/languages"
-    r = requests.get(url, headers=headers)
+
+    try:
+        r = requests.get(url, headers=HEADERS, timeout=10)
+    except requests.RequestException:
+        return {}
+
     if r.status_code != 200:
         return {}
-    return r.json()
+
+    data = r.json()
+    return data if isinstance(data, dict) else {}
