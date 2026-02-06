@@ -1,0 +1,5 @@
+Installer les dépendances:
+
+exécuter la commande ci-dessous pour installer les packages nécessaire à l'exécution du programme:
+
+pip install -r requirements.txt
