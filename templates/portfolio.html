@@ -1,28 +1,81 @@
 <!DOCTYPE html>
 <html lang="fr">
 <head>
+
+  <meta charset="UTF-8" />
+  <title>{{ config.portfolio.name }} — Portfolio</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <link rel="stylesheet" href="../assets/style.css" />
     <meta charset="UTF-8">
     <title>Portfolio GitHub - {{ username }}</title>
     <link rel="stylesheet" href="assets/style.css">
 </head>
 <body>
 
-<h1>Portfolio GitHub</h1>
-<h2>{{ username }}</h2>
+  <!-- HEADER -->
+  <header class="hero">
+    <h1>{{ config.portfolio.name }}</h1>
+    <h2>{{ config.portfolio.title }}</h2>
+    <p>{{ config.portfolio.description }}</p>
+  </header>
 
-<div class="repos">
-{% for repo in repos %}
-    <div class="card">
-        <h3>{{ repo.name }}</h3>
-        <p><strong>Commits :</strong> {{ repo.commits }}</p>
-        <p><strong>Langages :</strong> {{ repo.languages | join(", ") }}</p>
-        <p><strong>⭐ Stars :</strong> {{ repo.stars }}</p>
-        <p><strong>🍴 Forks :</strong> {{ repo.forks }}</p>
-        <p><strong>🏆 Score :</strong> {{ repo.score }}</p>
-        <a href="{{ repo.url }}" target="_blank">Voir le repository</a>
-    </div>
-{% endfor %}
-</div>
+  <!-- MAIN CONTENT -->
+  <main class="projects">
+
+    {% if projects|length == 0 %}
+      <p>Aucun projet trouvé.</p>
+    {% endif %}
+
+    {% for project in projects %}
+      <article class="project">
+
+        <!-- Project title -->
+        <h3>
+          <a href="{{ project.url }}" target="_blank" rel="noopener">
+            {{ project.name }}
+          </a>
+        </h3>
+
+        <!-- Description -->
+        <p>{{ project.description }}</p>
+
+        <!-- Meta informations -->
+        <div class="meta">
+            <span>🐍 <strong> Langage: </strong> {{ project.language }}</span>
+          <span>⭐ <strong> Stars: </strong> {{ project.stars }}</span>
+          <span>🍴 <strong> Forks: </strong> {{ project.forks }}</span>
+          <span>🧾 <strong> {{ project.commit_count }} commits (max 100)</strong></span>
+          <span>🏆 <strong> Score: </strong> {{ project.score }}</span>
+        </div>
+        <p style="color: green;"><strong> Ci-dessous est affiché un maximum de 100 commits de ce mini-projet </strong> </p>
+        <!-- Commits -->
+        {% if project.commits|length > 0 %}
+          <ul class="commits">
+            {% for commit in project.commits %}
+              <li>
+                <strong>{{ commit.message }}</strong>
+                <small>{{ commit.author }} — {{ commit.date }}</small>
+              </li>
+            {% endfor %}
+          </ul>
+        {% else %}
+          <p><em>Aucun commit disponible.</em></p>
+        {% endif %}
+
+      </article>
+    {% endfor %}
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer>
+    <p>
+      Portfolio généré automatiquement depuis GitHub —
+      <a href="https://github.com/{{ config.github.username }}" target="_blank">
+        @{{ config.github.username }}
+      </a>
+    </p>
+  </footer>
 
 </body>
 </html>
