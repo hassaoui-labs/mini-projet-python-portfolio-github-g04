@@ -29,7 +29,8 @@ def analyze_repo(repo, commits):
     commit_count = len(commits)
 
     # Score simple et explicable
-    score = (commit_count * 2)
+    # (Commits × 2) + (Étoiles × 5) + (Forks × 3)
+    score = (commit_count * 2) + (starts * 5) + (forks * 3)
 
     return {
         "name": repo["name"],
